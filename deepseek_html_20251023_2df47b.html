@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensaciones de Tango - Sorteo de Zapatos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8B0000;
+            --secondary: #D4AF37;
+            --dark: #2C2C2C;
+            --light: #F5F5F5;
+            --accent: #8B4513;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--dark) 0%, #4a4a4a 100%);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .language-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 1px solid var(--secondary);
+            color: var(--light);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn:hover, .lang-btn.active {
+            background: var(--secondary);
+            color: var(--dark);
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 1rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+            margin-top: 3px;
+        }
+
+        .checkbox-group label {
+            font-size: 0.9rem;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .social-link {
+            color: var(--light);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            color: var(--secondary);
+            transform: scale(1.2);
+        }
+
+        .contact-method {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .contact-option {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .contact-option.selected {
+            border-color: var(--secondary);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .contact-option i {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            color: var(--secondary);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: #a00000;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 128, 0, 0.2);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .success-message i {
+            font-size: 3rem;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-shoe-prints"></i>
+            </div>
+            <h1 id="title">Sorteo de Zapatos de Tango</h1>
+            <p class="subtitle" id="subtitle">¡Participa y gana zapatos de tango exclusivos!</p>
+        </header>
+
+        <div class="language-selector">
+            <button class="lang-btn active" data-lang="es">Español</button>
+            <button class="lang-btn" data-lang="en">English</button>
+            <button class="lang-btn" data-lang="zh">中文</button>
+        </div>
+
+        <form id="raffle-form">
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="firstName" id="firstNameLabel">Nombre</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="lastName" id="lastNameLabel">Apellido</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="birthDate" id="birthDateLabel">Fecha de Nacimiento</label>
+                    <input type="date" id="birthDate" name="birthDate" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" id="emailLabel">Correo Electrónico</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone" id="phoneLabel">Teléfono</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 id="requirementsTitle" style="margin-bottom: 15px;">Requisitos para Participar</h3>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="facebookLike" name="facebookLike">
+                    <label for="facebookLike" id="facebookLabel">Di "Me gusta" en algún video o seguí nuestra página de Facebook</label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <input type="checkbox" id="instagramFollow" name="instagramFollow">
+                    <label for="instagramFollow" id="instagramLabel">Seguí nuestro usuario de Instagram</label>
+                </div>
+                
+                <div class="social-links">
+                    <a href="https://www.facebook.com/sensaciones.de.tango.shoes.2024" target="_blank" class="social-link">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="https://www.instagram.com/sensacionesdetangoshoes" target="_blank" class="social-link">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3 id="contactTitle" style="margin-bottom: 15px;">¿Dónde prefieres que te contactemos si ganas?</h3>
+                
+                <div class="contact-method">
+                    <div class="contact-option" data-method="whatsapp">
+                        <i class="fab fa-whatsapp"></i>
+                        <p id="whatsappOption">WhatsApp</p>
+                    </div>
+                    <div class="contact-option" data-method="instagram">
+                        <i class="fab fa-instagram"></i>
+                        <p id="instagramOption">Instagram</p>
+                    </div>
+                </div>
+                <input type="hidden" id="contactMethod" name="contactMethod" required>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn" disabled>Participar en el Sorteo</button>
+        </form>
+
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i>
+            <h3 id="successTitle">¡Participación Registrada!</h3>
+            <p id="successText">Tu participación en el sorteo ha sido registrada correctamente. ¡Mucha suerte!</p>
+        </div>
+
+        <div class="footer">
+            <p id="footerText">© 2023 Sensaciones de Tango. Todos los derechos reservados.</p>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_PROYECTO.firebaseapp.com",
+            projectId: "TU_PROYECTO",
+            storageBucket: "TU_PROYECTO.appspot.com",
+            messagingSenderId: "TU_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Textos en diferentes idiomas
+        const translations = {
+            es: {
+                title: "Sorteo de Zapatos de Tango",
+                subtitle: "¡Participa y gana zapatos de tango exclusivos!",
+                firstNameLabel: "Nombre",
+                lastNameLabel: "Apellido",
+                birthDateLabel: "Fecha de Nacimiento",
+                emailLabel: "Correo Electrónico",
+                phoneLabel: "Teléfono",
+                requirementsTitle: "Requisitos para Participar",
+                facebookLabel: 'Di "Me gusta" en algún video o seguí nuestra página de Facebook',
+                instagramLabel: "Seguí nuestro usuario de Instagram",
+                contactTitle: "¿Dónde prefieres que te contactemos si ganas?",
+                whatsappOption: "WhatsApp",
+                instagramOption: "Instagram",
+                submitBtn: "Participar en el Sorteo",
+                successTitle: "¡Participación Registrada!",
+                successText: "Tu participación en el sorteo ha sido registrada correctamente. ¡Mucha suerte!",
+                footerText: "© 2023 Sensaciones de Tango. Todos los derechos reservados.",
+                validationError: "Debes cumplir al menos uno de los requisitos para participar"
+            },
+            en: {
+                title: "Tango Shoes Raffle",
+                subtitle: "Enter to win exclusive tango shoes!",
+                firstNameLabel: "First Name",
+                lastNameLabel: "Last Name",
+                birthDateLabel: "Date of Birth",
+                emailLabel: "Email",
+                phoneLabel: "Phone",
+                requirementsTitle: "Participation Requirements",
+                facebookLabel: 'Like any video or follow our Facebook page',
+                instagramLabel: "Follow our Instagram account",
+                contactTitle: "Where would you prefer us to contact you if you win?",
+                whatsappOption: "WhatsApp",
+                instagramOption: "Instagram",
+                submitBtn: "Enter Raffle",
+                successTitle: "Entry Registered!",
+                successText: "Your raffle entry has been successfully registered. Good luck!",
+                footerText: "© 2023 Sensaciones de Tango. All rights reserved.",
+                validationError: "You must meet at least one requirement to participate"
+            },
+            zh: {
+                title: "探戈鞋抽奖活动",
+                subtitle: "参与即有机会赢取独家探戈鞋！",
+                firstNameLabel: "名字",
+                lastNameLabel: "姓氏",
+                birthDateLabel: "出生日期",
+                emailLabel: "电子邮件",
+                phoneLabel: "电话",
+                requirementsTitle: "参与要求",
+                facebookLabel: "点赞我们的视频或关注我们的Facebook页面",
+                instagramLabel: "关注我们的Instagram账户",
+                contactTitle: "如果您获胜，您希望我们通过哪种方式联系您？",
+                whatsappOption: "WhatsApp",
+                instagramOption: "Instagram",
+                submitBtn: "参与抽奖",
+                successTitle: "参与成功！",
+                successText: "您的抽奖参与已成功注册。祝您好运！",
+                footerText: "© 2023 Sensaciones de Tango。保留所有权利。",
+                validationError: "您必须至少满足一个要求才能参与"
+            }
+        };
+
+        // Cambiar idioma
+        document.querySelectorAll('.lang-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                const lang = this.getAttribute('data-lang');
+                updateLanguage(lang);
+            });
+        });
+
+        // Actualizar textos según idioma
+        function updateLanguage(lang) {
+            document.getElementById('title').textContent = translations[lang].title;
+            document.getElementById('subtitle').textContent = translations[lang].subtitle;
+            document.getElementById('firstNameLabel').textContent = translations[lang].firstNameLabel;
+            document.getElementById('lastNameLabel').textContent = translations[lang].lastNameLabel;
+            document.getElementById('birthDateLabel').textContent = translations[lang].birthDateLabel;
+            document.getElementById('emailLabel').textContent = translations[lang].emailLabel;
+            document.getElementById('phoneLabel').textContent = translations[lang].phoneLabel;
+            document.getElementById('requirementsTitle').textContent = translations[lang].requirementsTitle;
+            document.getElementById('facebookLabel').textContent = translations[lang].facebookLabel;
+            document.getElementById('instagramLabel').textContent = translations[lang].instagramLabel;
+            document.getElementById('contactTitle').textContent = translations[lang].contactTitle;
+            document.getElementById('whatsappOption').textContent = translations[lang].whatsappOption;
+            document.getElementById('instagramOption').textContent = translations[lang].instagramOption;
+            document.getElementById('submitBtn').textContent = translations[lang].submitBtn;
+            document.getElementById('successTitle').textContent = translations[lang].successTitle;
+            document.getElementById('successText').textContent = translations[lang].successText;
+            document.getElementById('footerText').textContent = translations[lang].footerText;
+        }
+
+        // Selección de método de contacto
+        document.querySelectorAll('.contact-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.contact-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                document.getElementById('contactMethod').value = this.getAttribute('data-method');
+                validateForm();
+            });
+        });
+
+        // Validación del formulario
+        function validateForm() {
+            const facebookChecked = document.getElementById('facebookLike').checked;
+            const instagramChecked = document.getElementById('instagramFollow').checked;
+            const contactMethod = document.getElementById('contactMethod').value;
+            
+            const isValid = (facebookChecked || instagramChecked) && contactMethod;
+            document.getElementById('submitBtn').disabled = !isValid;
+            
+            return isValid;
+        }
+
+        // Event listeners para validación
+        document.getElementById('facebookLike').addEventListener('change', validateForm);
+        document.getElementById('instagramFollow').addEventListener('change', validateForm);
+
+        // Envío del formulario
+        document.getElementById('raffle-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                const currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
+                alert(translations[currentLang].validationError);
+                return;
+            }
+            
+            // Recoger datos del formulario
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                birthDate: document.getElementById('birthDate').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                facebookLike: document.getElementById('facebookLike').checked,
+                instagramFollow: document.getElementById('instagramFollow').checked,
+                contactMethod: document.getElementById('contactMethod').value,
+                timestamp: new Date(),
+                language: document.querySelector('.lang-btn.active').getAttribute('data-lang')
+            };
+            
+            // Guardar en Firebase
+            db.collection("raffleEntries").add(formData)
+                .then(() => {
+                    // Mostrar mensaje de éxito
+                    document.getElementById('raffle-form').style.display = 'none';
+                    document.getElementById('successMessage').style.display = 'block';
+                })
+                .catch((error) => {
+                    console.error("Error al guardar: ", error);
+                    alert("Hubo un error al enviar el formulario. Inténtalo de nuevo.");
+                });
+        });
+    </script>
+</body>
+</html>
