@@ -5,6 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sensaciones de Tango - Sorteo de Zapatos</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Incluir los SDKs de Firebase -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC90zEWLukz7X19UBdaxJnpDyP9Ih7TGTk",
+            authDomain: "sorteotango.firebaseapp.com",
+            projectId: "sorteotango",
+            storageBucket: "sorteotango.firebasestorage.app",
+            messagingSenderId: "943807208283",
+            appId: "1:943807208283:web:b2dca4ed9eefa0591b987e",
+            measurementId: "G-620C2ME3GJ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const analytics = getAnalytics(app);
+
+        // Hacer disponibles globalmente para el formulario
+        window.firebaseApp = app;
+        window.firestore = db;
+        window.addDocument = addDoc;
+        window.firestoreCollection = collection;
+    </script>
     <style>
         :root {
             --primary: #8B0000;
@@ -225,6 +254,27 @@
             margin-bottom: 15px;
         }
 
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid var(--secondary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
@@ -323,6 +373,11 @@
                 <input type="hidden" id="contactMethod" name="contactMethod" required>
             </div>
 
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p id="loadingText">Enviando datos...</p>
+            </div>
+
             <button type="submit" class="submit-btn" id="submitBtn" disabled>Participar en el Sorteo</button>
         </form>
 
@@ -337,25 +392,7 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
     <script>
-        // Configuración de Firebase
-        const firebaseConfig = {
-            apiKey: "TU_API_KEY",
-            authDomain: "TU_PROYECTO.firebaseapp.com",
-            projectId: "TU_PROYECTO",
-            storageBucket: "TU_PROYECTO.appspot.com",
-            messagingSenderId: "TU_SENDER_ID",
-            appId: "TU_APP_ID"
-        };
-
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
         // Textos en diferentes idiomas
         const translations = {
             es: {
@@ -376,7 +413,8 @@
                 successTitle: "¡Participación Registrada!",
                 successText: "Tu participación en el sorteo ha sido registrada correctamente. ¡Mucha suerte!",
                 footerText: "© 2023 Sensaciones de Tango. Todos los derechos reservados.",
-                validationError: "Debes cumplir al menos uno de los requisitos para participar"
+                validationError: "Debes cumplir al menos uno de los requisitos para participar",
+                loadingText: "Enviando datos..."
             },
             en: {
                 title: "Tango Shoes Raffle",
@@ -396,7 +434,8 @@
                 successTitle: "Entry Registered!",
                 successText: "Your raffle entry has been successfully registered. Good luck!",
                 footerText: "© 2023 Sensaciones de Tango. All rights reserved.",
-                validationError: "You must meet at least one requirement to participate"
+                validationError: "You must meet at least one requirement to participate",
+                loadingText: "Sending data..."
             },
             zh: {
                 title: "探戈鞋抽奖活动",
@@ -416,7 +455,8 @@
                 successTitle: "参与成功！",
                 successText: "您的抽奖参与已成功注册。祝您好运！",
                 footerText: "© 2023 Sensaciones de Tango。保留所有权利。",
-                validationError: "您必须至少满足一个要求才能参与"
+                validationError: "您必须至少满足一个要求才能参与",
+                loadingText: "发送数据中..."
             }
         };
 
@@ -450,6 +490,7 @@
             document.getElementById('successTitle').textContent = translations[lang].successTitle;
             document.getElementById('successText').textContent = translations[lang].successText;
             document.getElementById('footerText').textContent = translations[lang].footerText;
+            document.getElementById('loadingText').textContent = translations[lang].loadingText;
         }
 
         // Selección de método de contacto
@@ -479,7 +520,7 @@
         document.getElementById('instagramFollow').addEventListener('change', validateForm);
 
         // Envío del formulario
-        document.getElementById('raffle-form').addEventListener('submit', function(e) {
+        document.getElementById('raffle-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             if (!validateForm()) {
@@ -487,6 +528,10 @@
                 alert(translations[currentLang].validationError);
                 return;
             }
+            
+            // Mostrar loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('submitBtn').disabled = true;
             
             // Recoger datos del formulario
             const formData = {
@@ -502,18 +547,26 @@
                 language: document.querySelector('.lang-btn.active').getAttribute('data-lang')
             };
             
-            // Guardar en Firebase
-            db.collection("raffleEntries").add(formData)
-                .then(() => {
-                    // Mostrar mensaje de éxito
-                    document.getElementById('raffle-form').style.display = 'none';
-                    document.getElementById('successMessage').style.display = 'block';
-                })
-                .catch((error) => {
-                    console.error("Error al guardar: ", error);
-                    alert("Hubo un error al enviar el formulario. Inténtalo de nuevo.");
-                });
+            try {
+                // Guardar en Firebase usando la versión modular
+                await window.addDocument(window.firestoreCollection(window.firestore, "raffleEntries"), formData);
+                
+                // Ocultar loading y mostrar éxito
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('raffle-form').style.display = 'none';
+                document.getElementById('successMessage').style.display = 'block';
+            } catch (error) {
+                console.error("Error al guardar: ", error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+                
+                const currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
+                alert("Hubo un error al enviar el formulario. Inténtalo de nuevo.");
+            }
         });
+
+        // Inicializar con español
+        updateLanguage('es');
     </script>
 </body>
 </html>
