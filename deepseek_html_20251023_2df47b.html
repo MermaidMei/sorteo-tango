@@ -11,7 +11,6 @@
             --secondary: #C19A6B;
             --dark: #1a1a1a;
             --light: #F8F8F8;
-            --accent: #5D4037;
             --gold: #D4AF37;
         }
 
@@ -29,21 +28,19 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             padding: 20px;
-            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%238B0000" opacity="0.1" d="M30,30 Q50,10 70,30 T90,50 T70,70 T50,90 T30,70 T10,50 T30,30 Z"/></svg>');
         }
 
         .container {
             max-width: 500px;
             width: 100%;
             background: rgba(26, 26, 26, 0.95);
-            backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             border: 1px solid rgba(193, 154, 107, 0.3);
             position: relative;
-            overflow: hidden;
         }
 
         .container::before {
@@ -65,14 +62,12 @@
             font-size: 3rem;
             color: var(--gold);
             margin-bottom: 15px;
-            text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
         }
 
         h1 {
             font-size: 2rem;
             margin-bottom: 10px;
             color: var(--gold);
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
             font-weight: 600;
         }
 
@@ -101,11 +96,9 @@
             font-weight: 500;
         }
 
-        .lang-btn:hover, .lang-btn.active {
+        .lang-btn.active {
             background: var(--secondary);
             color: var(--dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(193, 154, 107, 0.3);
         }
 
         .form-section {
@@ -135,7 +128,7 @@
             color: var(--secondary);
         }
 
-        input, select {
+        input {
             width: 100%;
             padding: 14px 18px;
             border-radius: 10px;
@@ -143,14 +136,11 @@
             background: rgba(255, 255, 255, 0.1);
             color: var(--light);
             font-size: 1rem;
-            transition: all 0.3s ease;
         }
 
-        input:focus, select:focus {
+        input:focus {
             outline: none;
             border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-            background: rgba(255, 255, 255, 0.15);
         }
 
         .checkbox-group {
@@ -161,11 +151,6 @@
             padding: 10px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .checkbox-group:hover {
-            background: rgba(255, 255, 255, 0.08);
         }
 
         .checkbox-group input {
@@ -189,16 +174,9 @@
         .social-link {
             color: var(--light);
             font-size: 2rem;
-            transition: all 0.3s ease;
             padding: 10px;
             border-radius: 50%;
             background: rgba(193, 154, 107, 0.1);
-        }
-
-        .social-link:hover {
-            color: var(--gold);
-            transform: scale(1.2);
-            background: rgba(193, 154, 107, 0.2);
         }
 
         .contact-method {
@@ -214,19 +192,12 @@
             border: 2px solid rgba(193, 154, 107, 0.3);
             border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.05);
-        }
-
-        .contact-option:hover {
-            border-color: var(--secondary);
-            transform: translateY(-3px);
         }
 
         .contact-option.selected {
             border-color: var(--gold);
             background: rgba(212, 175, 55, 0.1);
-            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
         }
 
         .contact-option i {
@@ -249,23 +220,13 @@
             font-size: 1.2rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
             margin-top: 10px;
             letter-spacing: 1px;
-            box-shadow: 0 5px 15px rgba(139, 0, 0, 0.4);
-        }
-
-        .submit-btn:hover {
-            background: linear-gradient(135deg, #a52a2a, var(--primary));
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.6);
         }
 
         .submit-btn:disabled {
             background: #555;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
         .footer {
@@ -292,51 +253,9 @@
             margin-bottom: 20px;
         }
 
-        .loading {
-            display: none;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .loading-spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 4px solid var(--gold);
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .tango-decoration {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            opacity: 0.1;
-            pointer-events: none;
-        }
-
-        .decoration-1 {
-            top: 20px;
-            right: 20px;
-            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
-        }
-
-        .decoration-2 {
-            bottom: 20px;
-            left: 20px;
-            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-        }
-
         @media (max-width: 480px) {
             .container {
                 padding: 20px 15px;
-                border-radius: 15px;
             }
             
             h1 {
@@ -347,10 +266,6 @@
                 font-size: 2.5rem;
             }
             
-            .form-section {
-                padding: 15px;
-            }
-            
             .contact-method {
                 flex-direction: column;
             }
@@ -358,9 +273,6 @@
     </style>
 </head>
 <body>
-    <div class="tango-decoration decoration-1"></div>
-    <div class="tango-decoration decoration-2"></div>
-    
     <div class="container">
         <header>
             <div class="logo">
@@ -419,10 +331,10 @@
                 </div>
                 
                 <div class="social-links">
-                    <a href="https://www.facebook.com/sensaciones.de.tango.shoes.2024" target="_blank" class="social-link" title="Facebook">
+                    <a href="https://www.facebook.com/sensaciones.de.tango.shoes.2024" target="_blank" class="social-link">
                         <i class="fab fa-facebook"></i>
                     </a>
-                    <a href="https://www.instagram.com/sensacionesdetangoshoes" target="_blank" class="social-link" title="Instagram">
+                    <a href="https://www.instagram.com/sensacionesdetangoshoes" target="_blank" class="social-link">
                         <i class="fab fa-instagram"></i>
                     </a>
                 </div>
@@ -444,11 +356,6 @@
                 <input type="hidden" id="contactMethod" name="contactMethod" required>
             </div>
 
-            <div class="loading" id="loading">
-                <div class="loading-spinner"></div>
-                <p id="loadingText">Enviando datos...</p>
-            </div>
-
             <button type="submit" class="submit-btn" id="submitBtn" disabled>Participar en el Sorteo</button>
         </form>
 
@@ -463,33 +370,8 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyC90zEWLukz7X19UBdaxJnpDyP9Ih7TGTk",
-            authDomain: "sorteotango.firebaseapp.com",
-            projectId: "sorteotango",
-            storageBucket: "sorteotango.firebasestorage.app",
-            messagingSenderId: "943807208283",
-            appId: "1:943807208283:web:b2dca4ed9eefa0591b987e",
-            measurementId: "G-620C2ME3GJ"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const analytics = getAnalytics(app);
-
-        window.firebaseApp = app;
-        window.firestore = db;
-        window.addDocument = addDoc;
-        window.firestoreCollection = collection;
-    </script>
-
     <script>
+        // Textos en diferentes idiomas
         const translations = {
             es: {
                 title: "Sorteo de Zapatos de Tango",
@@ -510,8 +392,7 @@
                 successTitle: "¡Participación Registrada!",
                 successText: "Tu participación en el sorteo ha sido registrada correctamente. ¡Mucha suerte!",
                 footerText: "© 2024 Sensaciones de Tango. Todos los derechos reservados.",
-                validationError: "Debes cumplir al menos uno de los requisitos para participar",
-                loadingText: "Enviando datos..."
+                validationError: "Debes cumplir al menos uno de los requisitos para participar"
             },
             en: {
                 title: "Tango Shoes Raffle",
@@ -532,8 +413,7 @@
                 successTitle: "Entry Registered!",
                 successText: "Your raffle entry has been successfully registered. Good luck!",
                 footerText: "© 2024 Sensaciones de Tango. All rights reserved.",
-                validationError: "You must meet at least one requirement to participate",
-                loadingText: "Sending data..."
+                validationError: "You must meet at least one requirement to participate"
             },
             zh: {
                 title: "探戈鞋抽奖活动",
@@ -554,20 +434,22 @@
                 successTitle: "参与成功！",
                 successText: "您的抽奖参与已成功注册。祝您好运！",
                 footerText: "© 2024 Sensaciones de Tango。保留所有权利。",
-                validationError: "您必须至少满足一个要求才能参与",
-                loadingText: "发送数据中..."
+                validationError: "您必须至少满足一个要求才能参与"
             }
         };
 
+        // Cambiar idioma
         document.querySelectorAll('.lang-btn').forEach(button => {
             button.addEventListener('click', function() {
                 document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
                 this.classList.add('active');
+                
                 const lang = this.getAttribute('data-lang');
                 updateLanguage(lang);
             });
         });
 
+        // Actualizar textos según idioma
         function updateLanguage(lang) {
             document.getElementById('title').textContent = translations[lang].title;
             document.getElementById('subtitle').textContent = translations[lang].subtitle;
@@ -587,9 +469,9 @@
             document.getElementById('successTitle').textContent = translations[lang].successTitle;
             document.getElementById('successText').textContent = translations[lang].successText;
             document.getElementById('footerText').textContent = translations[lang].footerText;
-            document.getElementById('loadingText').textContent = translations[lang].loadingText;
         }
 
+        // Selección de método de contacto
         document.querySelectorAll('.contact-option').forEach(option => {
             option.addEventListener('click', function() {
                 document.querySelectorAll('.contact-option').forEach(opt => opt.classList.remove('selected'));
@@ -599,19 +481,24 @@
             });
         });
 
+        // Validación del formulario
         function validateForm() {
             const facebookChecked = document.getElementById('facebookLike').checked;
             const instagramChecked = document.getElementById('instagramFollow').checked;
             const contactMethod = document.getElementById('contactMethod').value;
+            
             const isValid = (facebookChecked || instagramChecked) && contactMethod;
             document.getElementById('submitBtn').disabled = !isValid;
+            
             return isValid;
         }
 
+        // Event listeners para validación
         document.getElementById('facebookLike').addEventListener('change', validateForm);
         document.getElementById('instagramFollow').addEventListener('change', validateForm);
 
-        document.getElementById('raffle-form').addEventListener('submit', async function(e) {
+        // Envío del formulario (simulado por ahora)
+        document.getElementById('raffle-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
             if (!validateForm()) {
@@ -620,36 +507,15 @@
                 return;
             }
             
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('submitBtn').disabled = true;
+            // Simular envío exitoso
+            document.getElementById('raffle-form').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'block';
             
-            const formData = {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                birthDate: document.getElementById('birthDate').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                facebookLike: document.getElementById('facebookLike').checked,
-                instagramFollow: document.getElementById('instagramFollow').checked,
-                contactMethod: document.getElementById('contactMethod').value,
-                timestamp: new Date(),
-                language: document.querySelector('.lang-btn.active').getAttribute('data-lang')
-            };
-            
-            try {
-                await window.addDocument(window.firestoreCollection(window.firestore, "raffleEntries"), formData);
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('raffle-form').style.display = 'none';
-                document.getElementById('successMessage').style.display = 'block';
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('submitBtn').disabled = false;
-                const currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
-                alert("Error al enviar. Intenta nuevamente.");
-            }
+            // Aquí iría la conexión con Firebase
+            console.log("Formulario enviado correctamente");
         });
 
+        // Inicializar con español
         updateLanguage('es');
     </script>
 </body>
