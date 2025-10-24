@@ -280,7 +280,12 @@
             color: var(--secondary);
         }
 
-        input {
+        .required-field::after {
+            content: " *";
+            color: var(--primary);
+        }
+
+        input, select {
             width: 100%;
             padding: 14px 18px;
             border-radius: 12px;
@@ -291,11 +296,49 @@
             transition: all 0.3s ease;
         }
 
-        input:focus {
+        input:focus, select:focus {
             outline: none;
             border-color: var(--gold);
             box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
             background: rgba(255, 255, 255, 0.12);
+        }
+
+        .birthday-info {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+
+        .birthday-info i {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+
+        .privacy-notice {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .privacy-notice i {
+            color: #4CAF50;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .privacy-notice p {
+            font-size: 0.9rem;
+            color: var(--light);
+            margin: 0;
+            line-height: 1.4;
         }
 
         .verification-section {
@@ -633,28 +676,46 @@
         <form id="raffle-form">
             <div class="form-section">
                 <h3 id="personalInfoTitle">Tu Información</h3>
+                
+                <div class="privacy-notice">
+                    <i class="fas fa-shield-alt"></i>
+                    <p id="privacyText">Tus datos están protegidos y no serán compartidos con terceros</p>
+                </div>
+                
                 <div class="form-group">
-                    <label for="firstName" id="firstNameLabel">Nombre</label>
+                    <label for="firstName" id="firstNameLabel" class="required-field">Nombre</label>
                     <input type="text" id="firstName" name="firstName" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="lastName" id="lastNameLabel">Apellido</label>
+                    <label for="lastName" id="lastNameLabel" class="required-field">Apellido</label>
                     <input type="text" id="lastName" name="lastName" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="birthDate" id="birthDateLabel">Fecha de Nacimiento</label>
-                    <input type="date" id="birthDate" name="birthDate" required>
+                    <label for="birthDay" id="birthDayLabel" class="required-field">Día de Cumpleaños</label>
+                    <select id="birthDay" name="birthDay" required>
+                        <option value="">Selecciona el día</option>
+                        <!-- Días 1-31 -->
+                    </select>
+                    <label for="birthMonth" id="birthMonthLabel" class="required-field" style="margin-top: 15px;">Mes de Cumpleaños</label>
+                    <select id="birthMonth" name="birthMonth" required>
+                        <option value="">Selecciona el mes</option>
+                        <!-- Meses -->
+                    </select>
+                    <div class="birthday-info">
+                        <i class="fas fa-gift"></i>
+                        <span id="birthdayInfoText">¡Te enviaremos un regalo especial en tu cumpleaños!</span>
+                    </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="email" id="emailLabel">Correo Electrónico</label>
+                    <label for="email" id="emailLabel" class="required-field">Correo Electrónico</label>
                     <input type="email" id="email" name="email" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="phone" id="phoneLabel">Teléfono</label>
+                    <label for="phone" id="phoneLabel" class="required-field">Teléfono</label>
                     <input type="tel" id="phone" name="phone" required>
                 </div>
             </div>
@@ -680,14 +741,6 @@
 
                 <div id="verificationResults">
                     <!-- Los resultados aparecerán aquí -->
-                </div>
-
-                <!-- Información sobre tokens -->
-                <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border-left: 4px solid var(--gold);">
-                    <p style="font-size: 0.9rem; color: var(--secondary); margin: 0;">
-                        <i class="fas fa-info-circle"></i> 
-                        <strong>Nota:</strong> Para verificación completa necesitas configurar las APIs de Facebook e Instagram con tus tokens de desarrollador.
-                    </p>
                 </div>
             </div>
 
@@ -728,9 +781,9 @@
 
     <script>
         // 🔧 CONFIGURACIÓN - REEMPLAZA CON TUS DATOS REALES
-        const FACEBOOK_APP_ID = 'TU_FACEBOOK_APP_ID_AQUI'; // Reemplaza con tu App ID de Facebook
+        const FACEBOOK_APP_ID = 'TU_FACEBOOK_APP_ID_AQUI';
         const FACEBOOK_PAGE_ID = 'sensaciones.de.tango.shoes.2024';
-        const INSTAGRAM_APP_ID = 'TU_INSTAGRAM_APP_ID_AQUI'; // Reemplaza con tu Instagram App ID
+        const INSTAGRAM_APP_ID = 'TU_INSTAGRAM_APP_ID_AQUI';
 
         let facebookVerified = false;
         let instagramVerified = false;
@@ -748,6 +801,33 @@
             }
         }
 
+        // Llenar días y meses
+        function populateDateSelects() {
+            const daySelect = document.getElementById('birthDay');
+            const monthSelect = document.getElementById('birthMonth');
+            
+            // Llenar días (1-31)
+            for (let i = 1; i <= 31; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                daySelect.appendChild(option);
+            }
+            
+            // Llenar meses
+            const months = [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ];
+            
+            months.forEach((month, index) => {
+                const option = document.createElement('option');
+                option.value = index + 1;
+                option.textContent = month;
+                monthSelect.appendChild(option);
+            });
+        }
+
         // Textos en diferentes idiomas
         const translations = {
             es: {
@@ -756,7 +836,10 @@
                 personalInfoTitle: "Tu Información",
                 firstNameLabel: "Nombre",
                 lastNameLabel: "Apellido",
-                birthDateLabel: "Fecha de Nacimiento",
+                birthDayLabel: "Día de Cumpleaños",
+                birthMonthLabel: "Mes de Cumpleaños",
+                birthdayInfoText: "¡Te enviaremos un regalo especial en tu cumpleaños!",
+                privacyText: "Tus datos están protegidos y no serán compartidos con terceros",
                 emailLabel: "Correo Electrónico",
                 phoneLabel: "Teléfono",
                 requirementsTitle: "Verificación de Seguidor",
@@ -773,7 +856,7 @@
                 successTitle: "¡Participación Confirmada!",
                 successText: "Tu registro ha sido exitoso. Revisaremos que cumplas con los requisitos y te contactaremos si ganas. ¡Mucha suerte!",
                 footerText: "© 2024 Sensaciones de Tango. Calzado profesional de tango. Todos los derechos reservados.",
-                validationError: "Debes ser seguidor y seleccionar un método de contacto"
+                validationError: "Debes completar todos los campos obligatorios, ser seguidor y seleccionar un método de contacto"
             },
             en: {
                 title: "Exclusive Tango Shoes Raffle",
@@ -781,7 +864,10 @@
                 personalInfoTitle: "Your Information",
                 firstNameLabel: "First Name",
                 lastNameLabel: "Last Name",
-                birthDateLabel: "Date of Birth",
+                birthDayLabel: "Birth Day",
+                birthMonthLabel: "Birth Month",
+                birthdayInfoText: "We'll send you a special gift on your birthday!",
+                privacyText: "Your data is protected and will not be shared with third parties",
                 emailLabel: "Email Address",
                 phoneLabel: "Phone Number",
                 requirementsTitle: "Follower Verification",
@@ -798,7 +884,7 @@
                 successTitle: "Entry Confirmed!",
                 successText: "Your registration was successful. We'll verify you meet the requirements and contact you if you win. Good luck!",
                 footerText: "© 2024 Sensaciones de Tango. Professional tango footwear. All rights reserved.",
-                validationError: "You must be a follower and select a contact method"
+                validationError: "You must complete all required fields, be a follower and select a contact method"
             },
             zh: {
                 title: "独家探戈鞋抽奖活动",
@@ -806,7 +892,10 @@
                 personalInfoTitle: "您的信息",
                 firstNameLabel: "名字",
                 lastNameLabel: "姓氏",
-                birthDateLabel: "出生日期",
+                birthDayLabel: "生日日期",
+                birthMonthLabel: "生日月份",
+                birthdayInfoText: "我们会在您生日时发送特别礼物！",
+                privacyText: "您的数据受保护，不会与第三方共享",
                 emailLabel: "电子邮件",
                 phoneLabel: "电话号码",
                 requirementsTitle: "粉丝验证",
@@ -823,7 +912,7 @@
                 successTitle: "参与确认！",
                 successText: "您的注册已成功。我们将核实您是否符合要求，如果您获胜会联系您。祝您好运！",
                 footerText: "© 2024 Sensaciones de Tango。专业探戈鞋履。保留所有权利。",
-                validationError: "您必须是粉丝并选择一种联系方式"
+                validationError: "您必须填写所有必填字段，成为粉丝并选择一种联系方式"
             }
         };
 
@@ -835,8 +924,6 @@
                 xfbml: true,
                 version: 'v18.0'
             });
-            
-            console.log('Facebook SDK inicializado');
         };
 
         // Cambiar idioma
@@ -855,7 +942,10 @@
             document.getElementById('personalInfoTitle').textContent = translations[lang].personalInfoTitle;
             document.getElementById('firstNameLabel').textContent = translations[lang].firstNameLabel;
             document.getElementById('lastNameLabel').textContent = translations[lang].lastNameLabel;
-            document.getElementById('birthDateLabel').textContent = translations[lang].birthDateLabel;
+            document.getElementById('birthDayLabel').textContent = translations[lang].birthDayLabel;
+            document.getElementById('birthMonthLabel').textContent = translations[lang].birthMonthLabel;
+            document.getElementById('birthdayInfoText').textContent = translations[lang].birthdayInfoText;
+            document.getElementById('privacyText').textContent = translations[lang].privacyText;
             document.getElementById('emailLabel').textContent = translations[lang].emailLabel;
             document.getElementById('phoneLabel').textContent = translations[lang].phoneLabel;
             document.getElementById('requirementsTitle').textContent = translations[lang].requirementsTitle;
@@ -911,7 +1001,6 @@
                     return;
                 }
 
-                // Verificar si sigue la página
                 const followsPage = response.data && response.data.some(page => 
                     page.id === FACEBOOK_PAGE_ID || 
                     page.name.toLowerCase().includes('sensaciones') ||
@@ -935,7 +1024,6 @@
             const currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
             alert(translations[currentLang].statusChecking + '\n\nNota: La verificación de Instagram requiere configuración adicional del servidor.');
             
-            // Simular verificación exitosa para demo
             setTimeout(() => {
                 instagramVerified = true;
                 addVerificationResult('instagram', true, '✅ Conectado a Instagram (Demo)');
@@ -975,14 +1063,29 @@
             });
         });
 
-        // Validación
+        // Validación mejorada
         function validateForm() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const birthDay = document.getElementById('birthDay').value;
+            const birthMonth = document.getElementById('birthMonth').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
             const contactMethod = document.getElementById('contactMethod').value;
             const isVerified = facebookVerified || instagramVerified;
-            const isValid = contactMethod && isVerified;
+            
+            const allFieldsFilled = firstName && lastName && birthDay && birthMonth && email && phone && contactMethod;
+            const isValid = allFieldsFilled && isVerified;
+            
             document.getElementById('submitBtn').disabled = !isValid;
             return isValid;
         }
+
+        // Validar campos en tiempo real
+        document.querySelectorAll('input, select').forEach(field => {
+            field.addEventListener('input', validateForm);
+            field.addEventListener('change', validateForm);
+        });
 
         // Envío del formulario
         document.getElementById('raffle-form').addEventListener('submit', function(e) {
@@ -997,7 +1100,8 @@
             const formData = {
                 firstName: document.getElementById('firstName').value,
                 lastName: document.getElementById('lastName').value,
-                birthDate: document.getElementById('birthDate').value,
+                birthDay: document.getElementById('birthDay').value,
+                birthMonth: document.getElementById('birthMonth').value,
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
                 contactMethod: document.getElementById('contactMethod').value,
@@ -1009,14 +1113,13 @@
             
             console.log('Datos del participante:', formData);
             
-            // Aquí enviarías los datos a Firebase
-            // Por ahora solo mostramos éxito
             document.getElementById('raffle-form').style.display = 'none';
             document.getElementById('successMessage').style.display = 'block';
         });
 
         // Inicializar
         createParticles();
+        populateDateSelects();
         updateLanguage('es');
 
         console.log('Página de sorteo cargada. Recuerda reemplazar FACEBOOK_APP_ID y INSTAGRAM_APP_ID con tus datos reales.');
