@@ -852,33 +852,6 @@
             }
         }
 
-        // Llenar días y meses
-        function populateDateSelects() {
-            const daySelect = document.getElementById('birthDay');
-            const monthSelect = document.getElementById('birthMonth');
-            
-            // Llenar días (1-31)
-            for (let i = 1; i <= 31; i++) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = i;
-                daySelect.appendChild(option);
-            }
-            
-            // Llenar meses
-            const months = [
-                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-            ];
-            
-            months.forEach((month, index) => {
-                const option = document.createElement('option');
-                option.value = index + 1;
-                option.textContent = month;
-                monthSelect.appendChild(option);
-            });
-        }
-
         // Textos en diferentes idiomas
         const translations = {
             es: {
@@ -910,7 +883,13 @@
                 successTitle: "¡Participación Confirmada!",
                 successText: "Tu registro ha sido exitoso. Revisaremos que cumplas con los requisitos y te contactaremos si ganas. ¡Mucha suerte!",
                 footerText: "© 2025 Sensaciones de Tango. Calzado profesional de tango. Todos los derechos reservados.",
-                validationError: "Debes completar todos los campos obligatorios, seguirnos en al menos una red social y seleccionar un método de contacto"
+                validationError: "Debes completar todos los campos obligatorios, seguirnos en al menos una red social y seleccionar un método de contacto",
+                selectDay: "Selecciona el día",
+                selectMonth: "Selecciona el mes",
+                months: [
+                    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                ]
             },
             en: {
                 title: "Exclusive Tango Shoes Raffle",
@@ -941,7 +920,13 @@
                 successTitle: "Entry Confirmed!",
                 successText: "Your registration was successful. We'll verify you meet the requirements and contact you if you win. Good luck!",
                 footerText: "© 2025 Sensaciones de Tango. Professional tango footwear. All rights reserved.",
-                validationError: "You must complete all required fields, follow us on at least one social network and select a contact method"
+                validationError: "You must complete all required fields, follow us on at least one social network and select a contact method",
+                selectDay: "Select day",
+                selectMonth: "Select month",
+                months: [
+                    'January', 'February', 'March', 'April', 'May', 'June',
+                    'July', 'August', 'September', 'October', 'November', 'December'
+                ]
             },
             zh: {
                 title: "独家探戈鞋抽奖活动",
@@ -972,9 +957,64 @@
                 successTitle: "参与确认！",
                 successText: "您的注册已成功。我们将核实您是否符合要求，如果您获胜会联系您。祝您好运！",
                 footerText: "© 2025 Sensaciones de Tango。专业探戈鞋履。保留所有权利。",
-                validationError: "您必须填写所有必填字段，至少在其中一个社交媒体上关注我们并选择一种联系方式"
+                validationError: "您必须填写所有必填字段，至少在其中一个社交媒体上关注我们并选择一种联系方式",
+                selectDay: "选择日期",
+                selectMonth: "选择月份",
+                months: [
+                    '一月', '二月', '三月', '四月', '五月', '六月',
+                    '七月', '八月', '九月', '十月', '十一月', '十二月'
+                ]
             }
         };
+
+        // Llenar días y meses
+        function populateDateSelects(lang = 'es') {
+            const daySelect = document.getElementById('birthDay');
+            const monthSelect = document.getElementById('birthMonth');
+            
+            // Guardar valores seleccionados
+            const selectedDay = daySelect.value;
+            const selectedMonth = monthSelect.value;
+            
+            // Limpiar selects
+            daySelect.innerHTML = '';
+            monthSelect.innerHTML = '';
+            
+            // Agregar opción por defecto
+            const dayDefaultOption = document.createElement('option');
+            dayDefaultOption.value = '';
+            dayDefaultOption.textContent = translations[lang].selectDay;
+            daySelect.appendChild(dayDefaultOption);
+            
+            const monthDefaultOption = document.createElement('option');
+            monthDefaultOption.value = '';
+            monthDefaultOption.textContent = translations[lang].selectMonth;
+            monthSelect.appendChild(monthDefaultOption);
+            
+            // Llenar días (1-31)
+            for (let i = 1; i <= 31; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                daySelect.appendChild(option);
+            }
+            
+            // Llenar meses
+            translations[lang].months.forEach((month, index) => {
+                const option = document.createElement('option');
+                option.value = index + 1;
+                option.textContent = month;
+                monthSelect.appendChild(option);
+            });
+            
+            // Restaurar valores seleccionados si existen
+            if (selectedDay) {
+                daySelect.value = selectedDay;
+            }
+            if (selectedMonth) {
+                monthSelect.value = selectedMonth;
+            }
+        }
 
         // Inicializar Facebook SDK
         window.fbAsyncInit = function() {
@@ -1023,6 +1063,9 @@
             document.getElementById('successTitle').textContent = translations[lang].successTitle;
             document.getElementById('successText').textContent = translations[lang].successText;
             document.getElementById('footerText').textContent = translations[lang].footerText;
+            
+            // Actualizar los selects de fecha
+            populateDateSelects(lang);
         }
 
         // Login con Facebook
