@@ -371,6 +371,21 @@
             color: #F44336;
         }
 
+        .requirement-notice {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #FFC107;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #FFC107;
+        }
+
+        .requirement-notice i {
+            color: #FFC107;
+            margin-right: 8px;
+        }
+
         .social-buttons {
             display: flex;
             gap: 12px;
@@ -528,6 +543,28 @@
         .contact-option.selected span {
             color: var(--gold);
             font-weight: 600;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(193, 154, 107, 0.2);
+        }
+
+        .checkbox-group input {
+            width: auto;
+            transform: scale(1.2);
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-size: 0.95rem;
+            cursor: pointer;
         }
 
         .submit-btn {
@@ -723,6 +760,11 @@
             <div class="form-section verification-section">
                 <h3 id="requirementsTitle">Verificación de Seguidor</h3>
                 
+                <div class="requirement-notice">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="requirementText">Es obligatorio seguirnos en al menos una red social para participar</span>
+                </div>
+                
                 <div id="verificationStatus" class="verification-status status-pending">
                     <i class="fas fa-clock"></i>
                     <p id="statusText">Conecta tus redes sociales para verificar que nos sigues</p>
@@ -759,8 +801,17 @@
                         <i class="fab fa-instagram"></i>
                         <span id="instagramOption">Instagram</span>
                     </div>
+                    <div class="contact-option" data-method="both">
+                        <i class="fas fa-comments"></i>
+                        <span id="bothOption">Ambos</span>
+                    </div>
                 </div>
                 <input type="hidden" id="contactMethod" name="contactMethod" required>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <label for="newsletter" id="newsletterLabel">Quiero recibir novedades y promociones especiales</label>
+                </div>
             </div>
 
             <button type="submit" class="submit-btn" id="submitBtn" disabled>
@@ -775,7 +826,7 @@
         </div>
 
         <div class="footer">
-            <p id="footerText">© 2024 Sensaciones de Tango. Calzado profesional de tango. Todos los derechos reservados.</p>
+            <p id="footerText">© 2025 Sensaciones de Tango. Calzado profesional de tango. Todos los derechos reservados.</p>
         </div>
     </div>
 
@@ -843,6 +894,7 @@
                 emailLabel: "Correo Electrónico",
                 phoneLabel: "Teléfono",
                 requirementsTitle: "Verificación de Seguidor",
+                requirementText: "Es obligatorio seguirnos en al menos una red social para participar",
                 statusPending: "Conecta tus redes sociales para verificar que nos sigues",
                 statusChecking: "Verificando...",
                 statusSuccess: "¡Verificación exitosa!",
@@ -852,11 +904,13 @@
                 contactSubtitle: "Elige cómo prefieres que te contactemos si resultas ganador",
                 whatsappOption: "WhatsApp",
                 instagramOption: "Instagram",
+                bothOption: "Ambos",
+                newsletterLabel: "Quiero recibir novedades y promociones especiales",
                 submitText: "Participar en el Sorteo",
                 successTitle: "¡Participación Confirmada!",
                 successText: "Tu registro ha sido exitoso. Revisaremos que cumplas con los requisitos y te contactaremos si ganas. ¡Mucha suerte!",
-                footerText: "© 2024 Sensaciones de Tango. Calzado profesional de tango. Todos los derechos reservados.",
-                validationError: "Debes completar todos los campos obligatorios, ser seguidor y seleccionar un método de contacto"
+                footerText: "© 2025 Sensaciones de Tango. Calzado profesional de tango. Todos los derechos reservados.",
+                validationError: "Debes completar todos los campos obligatorios, seguirnos en al menos una red social y seleccionar un método de contacto"
             },
             en: {
                 title: "Exclusive Tango Shoes Raffle",
@@ -871,6 +925,7 @@
                 emailLabel: "Email Address",
                 phoneLabel: "Phone Number",
                 requirementsTitle: "Follower Verification",
+                requirementText: "It's mandatory to follow us on at least one social network to participate",
                 statusPending: "Connect your social media to verify you follow us",
                 statusChecking: "Verifying...",
                 statusSuccess: "Verification successful!",
@@ -880,11 +935,13 @@
                 contactSubtitle: "Choose how you'd prefer us to contact you if you win",
                 whatsappOption: "WhatsApp",
                 instagramOption: "Instagram",
+                bothOption: "Both",
+                newsletterLabel: "I want to receive news and special promotions",
                 submitText: "Enter Raffle",
                 successTitle: "Entry Confirmed!",
                 successText: "Your registration was successful. We'll verify you meet the requirements and contact you if you win. Good luck!",
-                footerText: "© 2024 Sensaciones de Tango. Professional tango footwear. All rights reserved.",
-                validationError: "You must complete all required fields, be a follower and select a contact method"
+                footerText: "© 2025 Sensaciones de Tango. Professional tango footwear. All rights reserved.",
+                validationError: "You must complete all required fields, follow us on at least one social network and select a contact method"
             },
             zh: {
                 title: "独家探戈鞋抽奖活动",
@@ -899,6 +956,7 @@
                 emailLabel: "电子邮件",
                 phoneLabel: "电话号码",
                 requirementsTitle: "粉丝验证",
+                requirementText: "必须至少在其中一个社交媒体上关注我们才能参与",
                 statusPending: "连接您的社交媒体以验证您是否关注我们",
                 statusChecking: "验证中...",
                 statusSuccess: "验证成功！",
@@ -908,11 +966,13 @@
                 contactSubtitle: "选择如果您获胜，您希望我们通过哪种方式联系您",
                 whatsappOption: "WhatsApp",
                 instagramOption: "Instagram",
+                bothOption: "两者",
+                newsletterLabel: "我想接收新闻和特别促销",
                 submitText: "参与抽奖",
                 successTitle: "参与确认！",
                 successText: "您的注册已成功。我们将核实您是否符合要求，如果您获胜会联系您。祝您好运！",
-                footerText: "© 2024 Sensaciones de Tango。专业探戈鞋履。保留所有权利。",
-                validationError: "您必须填写所有必填字段，成为粉丝并选择一种联系方式"
+                footerText: "© 2025 Sensaciones de Tango。专业探戈鞋履。保留所有权利。",
+                validationError: "您必须填写所有必填字段，至少在其中一个社交媒体上关注我们并选择一种联系方式"
             }
         };
 
@@ -949,6 +1009,7 @@
             document.getElementById('emailLabel').textContent = translations[lang].emailLabel;
             document.getElementById('phoneLabel').textContent = translations[lang].phoneLabel;
             document.getElementById('requirementsTitle').textContent = translations[lang].requirementsTitle;
+            document.getElementById('requirementText').textContent = translations[lang].requirementText;
             document.getElementById('statusText').textContent = translations[lang].statusPending;
             document.getElementById('facebookBtn').textContent = translations[lang].facebookBtn;
             document.getElementById('instagramBtn').textContent = translations[lang].instagramBtn;
@@ -956,6 +1017,8 @@
             document.getElementById('contactSubtitle').textContent = translations[lang].contactSubtitle;
             document.getElementById('whatsappOption').textContent = translations[lang].whatsappOption;
             document.getElementById('instagramOption').textContent = translations[lang].instagramOption;
+            document.getElementById('bothOption').textContent = translations[lang].bothOption;
+            document.getElementById('newsletterLabel').textContent = translations[lang].newsletterLabel;
             document.getElementById('submitText').textContent = translations[lang].submitText;
             document.getElementById('successTitle').textContent = translations[lang].successTitle;
             document.getElementById('successText').textContent = translations[lang].successText;
@@ -1105,6 +1168,7 @@
                 email: document.getElementById('email').value,
                 phone: document.getElementById('phone').value,
                 contactMethod: document.getElementById('contactMethod').value,
+                newsletter: document.getElementById('newsletter').checked,
                 facebookVerified: facebookVerified,
                 instagramVerified: instagramVerified,
                 timestamp: new Date(),
