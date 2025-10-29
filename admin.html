@@ -264,6 +264,26 @@
             background: #f9f9f9;
         }
 
+        .purchase-status {
+            padding: 6px 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .purchase-status.purchased {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .purchase-status.not-purchased {
+            background: #f8f9fa;
+            color: #666;
+        }
+
         .winner-badge {
             background: var(--success);
             color: white;
@@ -338,6 +358,27 @@
             color: #ddd;
         }
 
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
         @media (max-width: 768px) {
             .admin-nav {
                 flex-direction: column;
@@ -389,7 +430,7 @@
         <div class="admin-container">
             <div class="admin-header">
                 <h1><i class="fas fa-shoe-prints"></i> Dashboard - Sensaciones de Tango</h1>
-                <p>Gestión de participantes del sorteo</p>
+                <p>Gestión de participantes y clientes</p>
             </div>
 
             <div class="admin-nav">
@@ -401,6 +442,9 @@
                 </button>
                 <button class="nav-btn" data-section="stats">
                     <i class="fas fa-chart-bar"></i> Estadísticas
+                </button>
+                <button class="nav-btn" data-section="customers">
+                    <i class="fas fa-shopping-bag"></i> Clientes
                 </button>
                 <button class="nav-btn" data-section="settings">
                     <i class="fas fa-cog"></i> Configuración
@@ -427,6 +471,10 @@
                         <div class="number" id="instagramVerified">0</div>
                     </div>
                     <div class="stat-card">
+                        <h3>Clientes que Compraron</h3>
+                        <div class="number" id="purchasedCount">0</div>
+                    </div>
+                    <div class="stat-card">
                         <h3>Ganadores</h3>
                         <div class="number" id="totalWinners">0</div>
                     </div>
@@ -447,6 +495,14 @@
                         </button>
                     </div>
                 </div>
+
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">Todos</button>
+                    <button class="filter-btn" data-filter="purchased">Compraron</button>
+                    <button class="filter-btn" data-filter="not-purchased">No Compraron</button>
+                    <button class="filter-btn" data-filter="facebook">Facebook</button>
+                    <button class="filter-btn" data-filter="instagram">Instagram</button>
+                </div>
                 
                 <div class="table-container">
                     <table class="data-table">
@@ -457,6 +513,7 @@
                                 <th>Email</th>
                                 <th>Teléfono</th>
                                 <th>Redes Sociales</th>
+                                <th>Estado Compra</th>
                                 <th>Fecha</th>
                                 <th>Acciones</th>
                             </tr>
@@ -469,6 +526,33 @@
                 
                 <div class="pagination" id="participantsPagination">
                     <!-- La paginación se generará aquí -->
+                </div>
+            </div>
+
+            <!-- Sección de Clientes (solo los que compraron) -->
+            <div id="customersSection" class="data-section" style="display: none;">
+                <div class="section-header">
+                    <h2>Clientes que Compraron</h2>
+                    <input type="text" id="searchCustomers" class="search-box" placeholder="Buscar clientes...">
+                </div>
+                
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Método Contacto</th>
+                                <th>Redes Sociales</th>
+                                <th>Fecha Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTable">
+                            <!-- Los clientes se cargarán aquí -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
@@ -534,7 +618,7 @@
     </div>
 
     <script>
-        // 🔧 CONFIGURACIÓN FIREBASE - REEMPLAZA CON TUS DATOS REALES
+        // CONFIGURACIÓN FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyC90zEWLukz7X19UBdaxJnpDyP9Ih7TGTk",
             authDomain: "sorteotango.firebaseapp.com",
@@ -557,8 +641,10 @@
         // Estado de la aplicación
         let currentUser = null;
         let allParticipants = [];
+        let filteredParticipants = [];
         let currentPage = 1;
         const itemsPerPage = 10;
+        let currentFilter = 'all';
 
         // Elementos del DOM
         const loginContainer = document.getElementById('loginContainer');
@@ -622,9 +708,20 @@
             
             // Búsqueda
             document.getElementById('searchParticipants').addEventListener('input', filterParticipants);
+            document.getElementById('searchCustomers').addEventListener('input', filterCustomers);
             
             // Seleccionar todos
             document.getElementById('selectAll').addEventListener('change', toggleSelectAll);
+            
+            // Filtros
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    applyFilters();
+                });
+            });
         }
 
         // Manejar login
@@ -667,7 +764,7 @@
                             ...doc.data()
                         });
                     });
-                    displayParticipants();
+                    applyFilters();
                     updateStats();
                 })
                 .catch(error => {
@@ -675,20 +772,43 @@
                 });
         }
 
+        // Aplicar filtros
+        function applyFilters() {
+            filteredParticipants = [...allParticipants];
+            
+            switch(currentFilter) {
+                case 'purchased':
+                    filteredParticipants = filteredParticipants.filter(p => p.hasPurchased);
+                    break;
+                case 'not-purchased':
+                    filteredParticipants = filteredParticipants.filter(p => !p.hasPurchased);
+                    break;
+                case 'facebook':
+                    filteredParticipants = filteredParticipants.filter(p => p.facebookVerified);
+                    break;
+                case 'instagram':
+                    filteredParticipants = filteredParticipants.filter(p => p.instagramVerified);
+                    break;
+                // 'all' no necesita filtro
+            }
+            
+            displayParticipants();
+            loadCustomers(); // Actualizar también la sección de clientes
+        }
+
         // Mostrar participantes en tabla
-        function displayParticipants(filteredParticipants = null) {
-            const participants = filteredParticipants || allParticipants;
+        function displayParticipants() {
             const tableBody = document.getElementById('participantsTable');
             const startIndex = (currentPage - 1) * itemsPerPage;
             const endIndex = startIndex + itemsPerPage;
-            const pageParticipants = participants.slice(startIndex, endIndex);
+            const pageParticipants = filteredParticipants.slice(startIndex, endIndex);
             
             tableBody.innerHTML = '';
             
             if (pageParticipants.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="empty-state">
+                        <td colspan="8" class="empty-state">
                             <i class="fas fa-users"></i>
                             <p>No hay participantes registrados</p>
                         </td>
@@ -716,6 +836,13 @@
                     <td>${participant.email}</td>
                     <td>${participant.phone}</td>
                     <td>${socialNetworks.join(', ') || 'Ninguna'}</td>
+                    <td>
+                        <button class="purchase-status ${participant.hasPurchased ? 'purchased' : 'not-purchased'}" 
+                                data-id="${participant.id}" 
+                                data-purchased="${participant.hasPurchased}">
+                            ${participant.hasPurchased ? '✓ Comprado' : 'No compró'}
+                        </button>
+                    </td>
                     <td>${date}</td>
                     <td>
                         <button class="action-btn btn-danger delete-btn" data-id="${participant.id}">
@@ -730,21 +857,163 @@
                 tableBody.appendChild(row);
             });
             
-            // Agregar event listeners a los botones
+            // Agregar event listeners
+            addTableEventListeners();
+            updatePagination(filteredParticipants.length);
+        }
+
+        // Agregar event listeners a la tabla
+        function addTableEventListeners() {
+            // Botones de eliminar
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     deleteParticipant(this.dataset.id);
                 });
             });
             
+            // Botones de ganador
             document.querySelectorAll('.winner-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     markAsWinner(this.dataset.id);
                 });
             });
             
-            // Actualizar paginación
-            updatePagination(participants.length);
+            // Botones de estado de compra
+            document.querySelectorAll('.purchase-status').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    togglePurchaseStatus(this.dataset.id, this.dataset.purchased === 'true');
+                });
+            });
+        }
+
+        // Cambiar estado de compra
+        function togglePurchaseStatus(participantId, currentStatus) {
+            const newStatus = !currentStatus;
+            
+            participantsRef.doc(participantId).update({
+                hasPurchased: newStatus
+            })
+            .then(() => {
+                // Actualizar localmente
+                const participant = allParticipants.find(p => p.id === participantId);
+                if (participant) {
+                    participant.hasPurchased = newStatus;
+                }
+                applyFilters();
+                updateStats();
+            })
+            .catch(error => {
+                console.error('Error actualizando estado de compra:', error);
+                alert('Error al actualizar el estado de compra');
+            });
+        }
+
+        // Cargar clientes (solo los que compraron)
+        function loadCustomers() {
+            const customersTable = document.getElementById('customersTable');
+            const customers = allParticipants.filter(p => p.hasPurchased);
+            
+            customersTable.innerHTML = '';
+            
+            if (customers.length === 0) {
+                customersTable.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <i class="fas fa-shopping-bag"></i>
+                            <p>No hay clientes registrados</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            customers.forEach(customer => {
+                const row = document.createElement('tr');
+                
+                const date = customer.timestamp ? 
+                    new Date(customer.timestamp.seconds * 1000).toLocaleDateString('es-ES') : 
+                    'N/A';
+                
+                const socialNetworks = [];
+                if (customer.facebookVerified) socialNetworks.push('FB');
+                if (customer.instagramVerified) socialNetworks.push('IG');
+                
+                row.innerHTML = `
+                    <td>${customer.firstName} ${customer.lastName}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.contactMethod || 'No especificado'}</td>
+                    <td>${socialNetworks.join(', ') || 'Ninguna'}</td>
+                    <td>${date}</td>
+                    <td>
+                        <button class="action-btn btn-danger delete-btn" data-id="${customer.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                customersTable.appendChild(row);
+            });
+        }
+
+        // Filtrar clientes
+        function filterCustomers() {
+            const searchTerm = document.getElementById('searchCustomers').value.toLowerCase();
+            const customersTable = document.getElementById('customersTable');
+            const customers = allParticipants.filter(p => p.hasPurchased);
+            
+            let filteredCustomers = customers;
+            
+            if (searchTerm) {
+                filteredCustomers = customers.filter(customer => 
+                    customer.firstName.toLowerCase().includes(searchTerm) ||
+                    customer.lastName.toLowerCase().includes(searchTerm) ||
+                    customer.email.toLowerCase().includes(searchTerm) ||
+                    customer.phone.includes(searchTerm)
+                );
+            }
+            
+            customersTable.innerHTML = '';
+            
+            if (filteredCustomers.length === 0) {
+                customersTable.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <i class="fas fa-shopping-bag"></i>
+                            <p>No se encontraron clientes</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            filteredCustomers.forEach(customer => {
+                const row = document.createElement('tr');
+                
+                const date = customer.timestamp ? 
+                    new Date(customer.timestamp.seconds * 1000).toLocaleDateString('es-ES') : 
+                    'N/A';
+                
+                const socialNetworks = [];
+                if (customer.facebookVerified) socialNetworks.push('FB');
+                if (customer.instagramVerified) socialNetworks.push('IG');
+                
+                row.innerHTML = `
+                    <td>${customer.firstName} ${customer.lastName}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.contactMethod || 'No especificado'}</td>
+                    <td>${socialNetworks.join(', ') || 'Ninguna'}</td>
+                    <td>${date}</td>
+                    <td>
+                        <button class="action-btn btn-danger delete-btn" data-id="${customer.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                
+                customersTable.appendChild(row);
+            });
         }
 
         // Actualizar paginación
@@ -773,19 +1042,37 @@
             const searchTerm = document.getElementById('searchParticipants').value.toLowerCase();
             
             if (!searchTerm) {
-                displayParticipants();
+                applyFilters();
                 return;
             }
             
-            const filtered = allParticipants.filter(participant => 
+            const searchFiltered = allParticipants.filter(participant => 
                 participant.firstName.toLowerCase().includes(searchTerm) ||
                 participant.lastName.toLowerCase().includes(searchTerm) ||
                 participant.email.toLowerCase().includes(searchTerm) ||
                 participant.phone.includes(searchTerm)
             );
             
+            // Aplicar filtro actual sobre la búsqueda
+            switch(currentFilter) {
+                case 'purchased':
+                    filteredParticipants = searchFiltered.filter(p => p.hasPurchased);
+                    break;
+                case 'not-purchased':
+                    filteredParticipants = searchFiltered.filter(p => !p.hasPurchased);
+                    break;
+                case 'facebook':
+                    filteredParticipants = searchFiltered.filter(p => p.facebookVerified);
+                    break;
+                case 'instagram':
+                    filteredParticipants = searchFiltered.filter(p => p.instagramVerified);
+                    break;
+                default:
+                    filteredParticipants = searchFiltered;
+            }
+            
             currentPage = 1;
-            displayParticipants(filtered);
+            displayParticipants();
         }
 
         // Eliminar participante
@@ -930,10 +1217,12 @@
             const totalParticipants = allParticipants.length;
             const facebookVerified = allParticipants.filter(p => p.facebookVerified).length;
             const instagramVerified = allParticipants.filter(p => p.instagramVerified).length;
+            const purchasedCount = allParticipants.filter(p => p.hasPurchased).length;
             
             document.getElementById('totalParticipants').textContent = totalParticipants;
             document.getElementById('facebookVerified').textContent = facebookVerified;
             document.getElementById('instagramVerified').textContent = instagramVerified;
+            document.getElementById('purchasedCount').textContent = purchasedCount;
         }
 
         // Cargar estadísticas adicionales
@@ -986,14 +1275,14 @@
         // Exportar datos
         function exportData() {
             // Crear CSV
-            let csv = 'Nombre,Email,Teléfono,Facebook,Instagram,Fecha\n';
+            let csv = 'Nombre,Email,Teléfono,Facebook,Instagram,Compró,Contacto,Fecha\n';
             
             allParticipants.forEach(participant => {
                 const date = participant.timestamp ? 
                     new Date(participant.timestamp.seconds * 1000).toLocaleDateString('es-ES') : 
                     'N/A';
                 
-                csv += `"${participant.firstName} ${participant.lastName}",${participant.email},${participant.phone},${participant.facebookVerified ? 'Sí' : 'No'},${participant.instagramVerified ? 'Sí' : 'No'},${date}\n`;
+                csv += `"${participant.firstName} ${participant.lastName}",${participant.email},${participant.phone},${participant.facebookVerified ? 'Sí' : 'No'},${participant.instagramVerified ? 'Sí' : 'No'},${participant.hasPurchased ? 'Sí' : 'No'},${participant.contactMethod || 'N/A'},${date}\n`;
             });
             
             // Descargar archivo
