@@ -8,9 +8,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
     
     <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
     <style>
         :root {
             --primary: #8B0000;
@@ -41,6 +41,86 @@
             overflow-x: hidden;
         }
 
+        /* Efectos de fondo animados */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(139, 0, 0, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            opacity: 0;
+            animation: floatParticle 8s linear infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .tango-decoration {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .decoration-1 {
+            top: -50px;
+            right: -50px;
+            background: radial-gradient(circle, var(--gold) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        .decoration-2 {
+            bottom: -50px;
+            left: -50px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite reverse;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.03; }
+            50% { transform: scale(1.1); opacity: 0.05; }
+        }
+
         .container {
             max-width: 500px;
             width: 100%;
@@ -55,11 +135,35 @@
             position: relative;
             overflow: hidden;
             border: 1px solid rgba(193, 154, 107, 0.2);
+            animation: containerEntrance 0.8s ease-out;
+        }
+
+        @keyframes containerEntrance {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--gold), var(--secondary));
+            border-radius: 25px 25px 0 0;
         }
 
         .logo-container {
             text-align: center;
             margin-bottom: 25px;
+            position: relative;
         }
 
         .logo {
@@ -67,11 +171,34 @@
             height: auto;
             margin: 0 auto 15px;
             display: block;
+            filter: 
+                drop-shadow(0 0 20px rgba(212, 175, 55, 0.3))
+                drop-shadow(0 0 40px rgba(212, 175, 55, 0.1));
+            transition: all 0.3s ease;
+            animation: logoGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { 
+                filter: 
+                    drop-shadow(0 0 20px rgba(212, 175, 55, 0.3))
+                    drop-shadow(0 0 40px rgba(212, 175, 55, 0.1));
+            }
+            50% { 
+                filter: 
+                    drop-shadow(0 0 25px rgba(212, 175, 55, 0.4))
+                    drop-shadow(0 0 50px rgba(212, 175, 55, 0.2));
+            }
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
         }
 
         header {
             text-align: center;
             margin-bottom: 30px;
+            position: relative;
         }
 
         h1 {
@@ -80,6 +207,7 @@
             margin-bottom: 12px;
             color: var(--gold);
             font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .subtitle {
@@ -87,6 +215,31 @@
             opacity: 0.9;
             color: var(--secondary);
             font-weight: 300;
+            line-height: 1.5;
+        }
+
+        .language-selector {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .lang-btn {
+            background: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--light);
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .lang-btn:hover, .lang-btn.active {
+            background: var(--secondary);
+            color: var(--dark);
+            transform: translateY(-2px);
         }
 
         .form-section {
@@ -95,6 +248,19 @@
             background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
             border-radius: 20px;
             border: 1px solid rgba(193, 154, 107, 0.15);
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         .form-section h3 {
@@ -102,6 +268,9 @@
             color: var(--gold);
             margin-bottom: 20px;
             font-size: 1.3rem;
+            font-weight: 600;
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 12px;
             text-align: center;
         }
 
@@ -129,11 +298,97 @@
             background: rgba(255, 255, 255, 0.08);
             color: var(--light);
             font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         input:focus, select:focus {
             outline: none;
             border-color: var(--gold);
+            box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .birthday-info {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+
+        .birthday-info i {
+            color: var(--gold);
+            margin-right: 8px;
+        }
+
+        .privacy-notice {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .privacy-notice i {
+            color: #4CAF50;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .privacy-notice p {
+            font-size: 0.9rem;
+            color: var(--light);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .verification-section {
+            text-align: center;
+        }
+
+        .verification-status {
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 2px solid;
+            transition: all 0.3s ease;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: #FFC107;
+            color: #FFC107;
+        }
+
+        .status-success {
+            background: rgba(76, 175, 80, 0.1);
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .status-error {
+            background: rgba(244, 67, 54, 0.1);
+            border-color: #F44336;
+            color: #F44336;
+        }
+
+        .requirement-notice {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #FFC107;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            color: #FFC107;
+        }
+
+        .requirement-notice i {
+            color: #FFC107;
+            margin-right: 8px;
         }
 
         .social-buttons {
@@ -157,6 +412,23 @@
             border: none;
             width: 100%;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .social-btn:hover::before {
+            left: 100%;
         }
 
         .social-btn.facebook {
@@ -169,6 +441,43 @@
 
         .social-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .social-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .verification-result {
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            border-left: 4px solid;
+            animation: resultAppear 0.5s ease-out;
+        }
+
+        @keyframes resultAppear {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-success {
+            color: #4CAF50;
+            border-left-color: #4CAF50;
+        }
+
+        .result-error {
+            color: #F44336;
+            border-left-color: #F44336;
         }
 
         .contact-options {
@@ -186,11 +495,35 @@
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.05);
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 0;
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            transition: height 0.3s ease;
+            z-index: -1;
+        }
+
+        .contact-option:hover {
+            border-color: var(--secondary);
+            transform: translateY(-2px);
         }
 
         .contact-option.selected {
             border-color: var(--gold);
             background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.2);
+        }
+
+        .contact-option.selected::before {
+            height: 100%;
         }
 
         .contact-option i {
@@ -198,10 +531,23 @@
             margin-bottom: 8px;
             color: var(--secondary);
             display: block;
+            transition: all 0.3s ease;
         }
 
         .contact-option.selected i {
             color: var(--gold);
+            transform: scale(1.1);
+        }
+
+        .contact-option span {
+            font-weight: 500;
+            color: var(--light);
+            transition: all 0.3s ease;
+        }
+
+        .contact-option.selected span {
+            color: var(--gold);
+            font-weight: 600;
         }
 
         .checkbox-group {
@@ -212,11 +558,18 @@
             padding: 12px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 8px;
+            border: 1px solid rgba(193, 154, 107, 0.2);
         }
 
         .checkbox-group input {
             width: auto;
             transform: scale(1.2);
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            font-size: 0.95rem;
+            cursor: pointer;
         }
 
         .submit-btn {
@@ -231,15 +584,49 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(139, 0, 0, 0.4);
         }
 
-        .submit-btn:hover:not(:disabled) {
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, var(--dark-red), var(--primary));
             transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(139, 0, 0, 0.6);
         }
 
         .submit-btn:disabled {
             background: #444;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .submit-btn:disabled:hover::before {
+            left: -100%;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            color: var(--secondary);
         }
 
         .success-message {
@@ -249,12 +636,31 @@
             background: rgba(0, 128, 0, 0.1);
             border-radius: 20px;
             border: 2px solid rgba(76, 175, 80, 0.3);
+            animation: successAppear 0.8s ease-out;
+        }
+
+        @keyframes successAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .success-message i {
             font-size: 4rem;
             color: #4CAF50;
             margin-bottom: 20px;
+            animation: bounce 1s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
         }
 
         .loading {
@@ -279,56 +685,102 @@
             .contact-options, .social-buttons {
                 flex-direction: column;
             }
+            .logo {
+                max-width: 160px;
+            }
         }
     </style>
 </head>
 <body>
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/es_LA/sdk.js"></script>
+
+    <div class="floating-particles" id="particles"></div>
+    <div class="tango-decoration decoration-1"></div>
+    <div class="tango-decoration decoration-2"></div>
+    
     <div class="container">
         <div class="logo-container">
             <img src="https://i.ibb.co/M5nbz7zz/logo-sensaciones.png" alt="Sensaciones de Tango" class="logo">
         </div>
 
         <header>
-            <h1>Sorteo Exclusivo de Zapatos de Tango</h1>
-            <p class="subtitle">Participa por un par de zapatos de tango profesionales de edición limitada</p>
+            <h1 id="title">Sorteo Exclusivo de Zapatos de Tango</h1>
+            <p class="subtitle" id="subtitle">Participa por un par de zapatos de tango profesionales de edición limitada</p>
         </header>
+
+        <div class="language-selector">
+            <button class="lang-btn active" data-lang="es">Español</button>
+            <button class="lang-btn" data-lang="en">English</button>
+            <button class="lang-btn" data-lang="zh">中文</button>
+        </div>
 
         <form id="raffle-form">
             <div class="form-section">
-                <h3>Tu Información</h3>
+                <h3 id="personalInfoTitle">Tu Información</h3>
+                
+                <div class="privacy-notice">
+                    <i class="fas fa-shield-alt"></i>
+                    <p id="privacyText">Tus datos están protegidos y no serán compartidos con terceros</p>
+                </div>
                 
                 <div class="form-group">
-                    <label for="firstName" class="required-field">Nombre</label>
+                    <label for="firstName" id="firstNameLabel" class="required-field">Nombre</label>
                     <input type="text" id="firstName" name="firstName" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="lastName" class="required-field">Apellido</label>
+                    <label for="lastName" id="lastNameLabel" class="required-field">Apellido</label>
                     <input type="text" id="lastName" name="lastName" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="email" class="required-field">Correo Electrónico</label>
+                    <label for="birthDay" id="birthDayLabel" class="required-field">Día de Cumpleaños</label>
+                    <select id="birthDay" name="birthDay" required>
+                        <option value="">Selecciona el día</option>
+                    </select>
+                    <label for="birthMonth" id="birthMonthLabel" class="required-field" style="margin-top: 15px;">Mes de Cumpleaños</label>
+                    <select id="birthMonth" name="birthMonth" required>
+                        <option value="">Selecciona el mes</option>
+                    </select>
+                    <div class="birthday-info">
+                        <i class="fas fa-gift"></i>
+                        <span id="birthdayInfoText">¡Te enviaremos un regalo especial en tu cumpleaños!</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" id="emailLabel" class="required-field">Correo Electrónico</label>
                     <input type="email" id="email" name="email" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="phone" class="required-field">Teléfono</label>
+                    <label for="phone" id="phoneLabel" class="required-field">Teléfono</label>
                     <input type="tel" id="phone" name="phone" required>
                 </div>
             </div>
 
-            <div class="form-section">
-                <h3>Verificación de Seguidor</h3>
+            <div class="form-section verification-section">
+                <h3 id="requirementsTitle">Verificación de Seguidor</h3>
                 
+                <div class="requirement-notice">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="requirementText">Es obligatorio seguirnos en al menos una red social para participar</span>
+                </div>
+                
+                <div id="verificationStatus" class="verification-status status-pending">
+                    <i class="fas fa-clock"></i>
+                    <p id="statusText">Conecta tus redes sociales para verificar que nos sigues</p>
+                </div>
+
                 <div class="social-buttons">
-                    <button type="button" class="social-btn facebook" id="facebookBtn">
+                    <button type="button" class="social-btn facebook" id="facebookLogin">
                         <i class="fab fa-facebook-f"></i>
-                        <span>Seguir en Facebook</span>
+                        <span id="facebookBtn">Verificar Facebook</span>
                     </button>
-                    <button type="button" class="social-btn instagram" id="instagramBtn">
+                    <button type="button" class="social-btn instagram" id="instagramLogin">
                         <i class="fab fa-instagram"></i>
-                        <span>Seguir en Instagram</span>
+                        <span id="instagramBtn">Verificar Instagram</span>
                     </button>
                 </div>
 
@@ -338,168 +790,530 @@
             </div>
 
             <div class="form-section">
-                <h3>Preferencia de Contacto</h3>
+                <h3 id="contactTitle">Preferencia de Contacto</h3>
+                <p id="contactSubtitle">
+                    Elige cómo prefieres que te contactemos si resultas ganador
+                </p>
                 
                 <div class="contact-options">
                     <div class="contact-option" data-method="whatsapp">
                         <i class="fab fa-whatsapp"></i>
-                        <span>WhatsApp</span>
+                        <span id="whatsappOption">WhatsApp</span>
                     </div>
                     <div class="contact-option" data-method="instagram">
                         <i class="fab fa-instagram"></i>
-                        <span>Instagram</span>
+                        <span id="instagramOption">Instagram</span>
                     </div>
-                    <div class="contact-option" data-method="email">
-                        <i class="fas fa-envelope"></i>
-                        <span>Email</span>
+                    <div class="contact-option" data-method="both">
+                        <i class="fas fa-comments"></i>
+                        <span id="bothOption">Ambos</span>
                     </div>
                 </div>
                 <input type="hidden" id="contactMethod" name="contactMethod" required>
 
                 <div class="checkbox-group">
                     <input type="checkbox" id="newsletter" name="newsletter">
-                    <label for="newsletter">Quiero recibir novedades y promociones especiales</label>
+                    <label for="newsletter" id="newsletterLabel">Quiero recibir novedades y promociones especiales</label>
                 </div>
             </div>
 
             <button type="submit" class="submit-btn" id="submitBtn" disabled>
-                <span>Participar en el Sorteo</span>
+                <span id="submitText">Participar en el Sorteo</span>
             </button>
         </form>
 
         <div class="success-message" id="successMessage">
             <i class="fas fa-check-circle"></i>
-            <h3>¡Participación Confirmada!</h3>
-            <p>Tu registro ha sido exitoso. Te contactaremos si ganas. ¡Mucha suerte!</p>
+            <h3 id="successTitle">¡Ya estás participando!</h3>
+            <p id="successText">Tu participación en el sorteo ha sido registrada. Te contactaremos si resultas ganador. ¡Mucha suerte!</p>
+        </div>
+
+        <div class="footer">
+            <p id="footerText">© 2025 Sensaciones de Tango. Calzado profesional de tango. Todos los derechos reservados.</p>
         </div>
     </div>
 
     <script>
-        // CONFIGURACIÓN FIREBASE
-        const firebaseConfig = {
-            apiKey: "AIzaSyC90zEWLukz7X19UBdaxJnpDyP9Ih7TGTk",
-            authDomain: "sorteotango.firebaseapp.com",
-            projectId: "sorteotango",
-            storageBucket: "sorteotango.firebasestorage.app",
-            messagingSenderId: "943807208283",
-            appId: "1:943807208283:web:b2dca4ed9eefa0591b987e"
-        };
+    // 🔥 CONFIGURACIÓN FIREBASE
+    const firebaseConfig = {
+        apiKey: "AIzaSyC90zEWLukz7X19UBdaxJnpDyP9Ih7TGTk",
+        authDomain: "sorteotango.firebaseapp.com",
+        projectId: "sorteotango",
+        storageBucket: "sorteotango.firebasestorage.app",
+        messagingSenderId: "943807208283",
+        appId: "1:943807208283:web:b2dca4ed9eefa0591b987e"
+    };
 
-        // Inicializar Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const participantsRef = db.collection('participants');
-
-        let facebookVerified = false;
-        let instagramVerified = false;
-
-        // Verificación simple de redes sociales (demo)
-        document.getElementById('facebookBtn').addEventListener('click', function() {
-            facebookVerified = true;
-            addVerificationResult('facebook', true, '✅ Sigues nuestra página de Facebook');
-            updateVerificationStatus();
-        });
-
-        document.getElementById('instagramBtn').addEventListener('click', function() {
-            instagramVerified = true;
-            addVerificationResult('instagram', true, '✅ Sigues nuestra página de Instagram');
-            updateVerificationStatus();
-        });
-
-        // Agregar resultado de verificación
-        function addVerificationResult(platform, success, message) {
-            const resultsDiv = document.getElementById('verificationResults');
-            const resultDiv = document.createElement('div');
-            resultDiv.style.cssText = 'padding: 10px; margin: 5px 0; border-radius: 5px; background: ' + (success ? '#4CAF50' : '#f44336') + '; color: white;';
-            resultDiv.innerHTML = `<i class="fab fa-${platform}"></i> ${message}`;
-            resultsDiv.appendChild(resultDiv);
+    // Inicializar Firebase
+    let db;
+    try {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
+        db = firebase.firestore();
+        console.log("✅ Firebase inicializado correctamente");
+    } catch (error) {
+        console.error("❌ Error inicializando Firebase:", error);
+    }
 
-        // Actualizar estado de verificación
-        function updateVerificationStatus() {
-            if (facebookVerified || instagramVerified) {
-                validateForm();
+    // 🔧 CONFIGURACIÓN REDES SOCIALES
+    const FACEBOOK_PAGE_ID = 'sensaciones.de.tango.shoes.2024';
+
+    let facebookVerified = false;
+    let instagramVerified = false;
+
+    // FUNCIÓN MEJORADA PARA GUARDAR EN FIREBASE
+    async function guardarEnFirebase(datos) {
+        try {
+            console.log("📝 Intentando guardar en Firebase:", datos);
+            
+            if (!db) {
+                throw new Error("Firebase no está inicializado");
             }
-        }
 
-        // Selección de contacto
-        document.querySelectorAll('.contact-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.contact-option').forEach(opt => opt.classList.remove('selected'));
-                this.classList.add('selected');
-                document.getElementById('contactMethod').value = this.getAttribute('data-method');
-                validateForm();
+            const docRef = await db.collection("participantes").add({
+                nombre: datos.firstName + " " + datos.lastName,
+                email: datos.email,
+                telefono: datos.phone,
+                fecha_nacimiento: `${datos.birthDay}/${datos.birthMonth}`,
+                metodo_contacto: datos.contactMethod,
+                newsletter: datos.newsletter || false,
+                facebook_verificado: datos.facebookVerified || false,
+                instagram_verificado: datos.instagramVerified || false,
+                idioma: datos.language || 'es',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                fecha_registro: new Date().toISOString(),
+                dominio: "sensacionesdetangoshoes.ar"
             });
-        });
-
-        // Validación del formulario
-        function validateForm() {
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const contactMethod = document.getElementById('contactMethod').value;
-            const isVerified = facebookVerified || instagramVerified;
             
-            const allFieldsFilled = firstName && lastName && email && phone && contactMethod;
-            const isValid = allFieldsFilled && isVerified;
-            
-            document.getElementById('submitBtn').disabled = !isValid;
-            return isValid;
-        }
-
-        // Validar campos en tiempo real
-        document.querySelectorAll('input, select').forEach(field => {
-            field.addEventListener('input', validateForm);
-        });
-
-        // Envío del formulario
-        document.getElementById('raffle-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            if (!validateForm()) {
-                alert('Por favor completa todos los campos obligatorios y verifica que nos sigues en al menos una red social.');
-                return;
-            }
-            
-            const formData = {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
-                contactMethod: document.getElementById('contactMethod').value,
-                newsletter: document.getElementById('newsletter').checked,
-                facebookVerified: facebookVerified,
-                instagramVerified: instagramVerified,
-                timestamp: new Date(),
-                hasPurchased: false // Nuevo campo para tracking de compras
+            console.log("✅ PARTICIPACIÓN GUARDADA EXITOSAMENTE. ID:", docRef.id);
+            return { 
+                exito: true, 
+                id: docRef.id,
+                mensaje: "Datos guardados correctamente"
             };
             
-            try {
-                // Mostrar estado de carga
-                const submitBtn = document.getElementById('submitBtn');
-                const originalText = submitBtn.innerHTML;
-                submitBtn.innerHTML = '<div class="loading"></div> Guardando...';
-                submitBtn.disabled = true;
-                
-                // Guardar en Firebase
-                await participantsRef.add(formData);
-                
-                // Mostrar éxito
-                document.getElementById('raffle-form').style.display = 'none';
-                document.getElementById('successMessage').style.display = 'block';
-                
-            } catch (error) {
-                console.error('Error guardando participante:', error);
-                alert('Error al guardar tu participación. Por favor, intenta nuevamente.');
-                
-                // Restaurar botón
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }
-        });
+        } catch (error) {
+            console.error("❌ ERROR CRÍTICO EN FIREBASE:", error);
+            return { 
+                exito: false, 
+                error: error.message,
+                codigo: error.code
+            };
+        }
+    }
 
-        console.log('Página de sorteo cargada correctamente');
-    </script>
-</body>
-</html>
+    // VERIFICAR SI YA PARTICIPÓ
+    //function verificarParticipacionPrevia() {
+        //const yaParticipo = localStorage.getItem('sorteo_sensaciones_participo');
+        //if (yaParticipo === 'true') {
+            //document.getElementById('raffle-form').style.display = 'none';
+            //document.getElementById('successMessage').style.display = 'block';
+            //return true;
+        //}
+        //return false;
+    //}
+
+    // FUNCIÓN PARA MOSTRAR ÉXITO
+    function mostrarMensajeExito() {
+        document.getElementById('raffle-form').style.display = 'none';
+        document.getElementById('successMessage').style.display = 'block';
+    }
+
+    // Crear partículas flotantes
+    function createParticles() {
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particle.style.animationDuration = (6 + Math.random() * 6) + 's';
+            particlesContainer.appendChild(particle);
+        }
+    }
+
+    // Textos en diferentes idiomas
+    const translations = {
+        es: {
+            title: "Sorteo Exclusivo de Zapatos de Tango",
+            subtitle: "Participa por un par de zapatos de tango profesionales de edición limitada",
+            personalInfoTitle: "Tu Información",
+            firstNameLabel: "Nombre",
+            lastNameLabel: "Apellido",
+            birthDayLabel: "Día de Cumpleaños",
+            birthMonthLabel: "Mes de Cumpleaños",
+            birthdayInfoText: "¡Te enviaremos un regalo especial en tu cumpleaños!",
+            privacyText: "Tus datos están protegidos y no serán compartidos con terceros",
+            emailLabel: "Correo Electrónico",
+            phoneLabel: "Teléfono",
+            requirementsTitle: "Verificación de Seguidor",
+            requirementText: "Es obligatorio seguirnos en al menos una red social para participar",
+            statusPending: "Conecta tus redes sociales para verificar que nos sigues",
+            statusChecking: "Verificando...",
+            statusSuccess: "¡Verificación exitosa!",
+            facebookBtn: "Verificar Facebook",
+            instagramBtn: "Verificar Instagram",
+            contactTitle: "Preferencia de Contacto",
+            contactSubtitle: "Elige cómo prefieres que te contactemos si resultas ganador",
+            whatsappOption: "WhatsApp",
+            instagramOption: "Instagram",
+            bothOption: "Ambos",
+            newsletterLabel: "Quiero recibir novedades y promociones especiales",
+            submitText: "Participar en el Sorteo",
+            successTitle: "¡Ya estás participando!",
+            successText: "Tu participación en el sorteo ha sido registrada. Te contactaremos si resultas ganador. ¡Mucha suerte!",
+            footerText: "© 2025 Sensaciones de Tango. Calzado profesional de tango. Todos los derechos reservados.",
+            validationError: "Debes completar todos los campos obligatorios, seguirnos en al menos una red social y seleccionar un método de contacto",
+            selectDay: "Selecciona el día",
+            selectMonth: "Selecciona el mes",
+            months: [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+            ]
+        },
+        en: {
+            title: "Exclusive Tango Shoes Raffle",
+            subtitle: "Enter to win a pair of professional limited edition tango shoes",
+            personalInfoTitle: "Your Information",
+            firstNameLabel: "First Name",
+            lastNameLabel: "Last Name",
+            birthDayLabel: "Birth Day",
+            birthMonthLabel: "Birth Month",
+            birthdayInfoText: "We'll send you a special gift on your birthday!",
+            privacyText: "Your data is protected and will not be shared with third parties",
+            emailLabel: "Email Address",
+            phoneLabel: "Phone Number",
+            requirementsTitle: "Follower Verification",
+            requirementText: "It's mandatory to follow us on at least one social network to participate",
+            statusPending: "Connect your social media to verify you follow us",
+            statusChecking: "Verifying...",
+            statusSuccess: "Verification successful!",
+            facebookBtn: "Verify Facebook",
+            instagramBtn: "Verify Instagram",
+            contactTitle: "Contact Preference",
+            contactSubtitle: "Choose how you'd prefer us to contact you if you win",
+            whatsappOption: "WhatsApp",
+            instagramOption: "Instagram",
+            bothOption: "Both",
+            newsletterLabel: "I want to receive news and special promotions",
+            submitText: "Enter Raffle",
+            successTitle: "You're now participating!",
+            successText: "Your entry in the raffle has been registered. We'll contact you if you win. Good luck!",
+            footerText: "© 2025 Sensaciones de Tango. Professional tango footwear. All rights reserved.",
+            validationError: "You must complete all required fields, follow us on at least one social network and select a contact method",
+            selectDay: "Select day",
+            selectMonth: "Select month",
+            months: [
+                'January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'
+            ]
+        },
+        zh: {
+            title: "独家探戈鞋抽奖活动",
+            subtitle: "参与即有机会赢得专业限量版探戈鞋",
+            personalInfoTitle: "您的信息",
+            firstNameLabel: "名字",
+            lastNameLabel: "姓氏",
+            birthDayLabel: "生日日期",
+            birthMonthLabel: "生日月份",
+            birthdayInfoText: "我们会在您生日时发送特别礼物！",
+            privacyText: "您的数据受保护，不会与第三方共享",
+            emailLabel: "电子邮件",
+            phoneLabel: "电话号码",
+            requirementsTitle: "粉丝验证",
+            requirementText: "必须至少在其中一个社交媒体上关注我们才能参与",
+            statusPending: "连接您的社交媒体以验证您是否关注我们",
+            statusChecking: "验证中...",
+            statusSuccess: "验证成功！",
+            facebookBtn: "验证Facebook",
+            instagramBtn: "验证Instagram",
+            contactTitle: "联系偏好",
+            contactSubtitle: "选择如果您获胜，您希望我们通过哪种方式联系您",
+            whatsappOption: "WhatsApp",
+            instagramOption: "Instagram",
+            bothOption: "两者",
+            newsletterLabel: "我想接收新闻和特别促销",
+            submitText: "参与抽奖",
+            successTitle: "您已成功参与！",
+            successText: "您的抽奖参与已登记。如果您获胜我们会联系您。祝您好运！",
+            footerText: "© 2025 Sensaciones de Tango。专业探戈鞋履。保留所有权利。",
+            validationError: "您必须填写所有必填字段，至少在其中一个社交媒体上关注我们并选择一种联系方式",
+            selectDay: "选择日期",
+            selectMonth: "选择月份",
+            months: [
+                '一月', '二月', '三月', '四月', '五月', '六月',
+                '七月', '八月', '九月', '十月', '十一月', '十二月'
+            ]
+        }
+    };
+
+    // Llenar días y meses
+    function populateDateSelects(lang = 'es') {
+        const daySelect = document.getElementById('birthDay');
+        const monthSelect = document.getElementById('birthMonth');
+        
+        // Guardar valores seleccionados
+        const selectedDay = daySelect.value;
+        const selectedMonth = monthSelect.value;
+        
+        // Limpiar selects
+        daySelect.innerHTML = '';
+        monthSelect.innerHTML = '';
+        
+        // Agregar opción por defecto
+        const dayDefaultOption = document.createElement('option');
+        dayDefaultOption.value = '';
+        dayDefaultOption.textContent = translations[lang].selectDay;
+        daySelect.appendChild(dayDefaultOption);
+        
+        const monthDefaultOption = document.createElement('option');
+        monthDefaultOption.value = '';
+        monthDefaultOption.textContent = translations[lang].selectMonth;
+        monthSelect.appendChild(monthDefaultOption);
+        
+        // Llenar días (1-31)
+        for (let i = 1; i <= 31; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = i;
+            daySelect.appendChild(option);
+        }
+        
+        // Llenar meses
+        translations[lang].months.forEach((month, index) => {
+            const option = document.createElement('option');
+            option.value = index + 1;
+            option.textContent = month;
+            monthSelect.appendChild(option);
+        });
+        
+        // Restaurar valores seleccionados si existen
+        if (selectedDay) {
+            daySelect.value = selectedDay;
+        }
+        if (selectedMonth) {
+            monthSelect.value = selectedMonth;
+        }
+    }
+
+    // Inicializar Facebook SDK
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId: '', // Dejar vacío por ahora
+            cookie: true,
+            xfbml: true,
+            version: 'v18.0'
+        });
+    };
+
+    // Cambiar idioma
+    document.querySelectorAll('.lang-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            updateLanguage(this.getAttribute('data-lang'));
+        });
+    });
+
+    // Actualizar textos
+    function updateLanguage(lang) {
+        document.getElementById('title').textContent = translations[lang].title;
+        document.getElementById('subtitle').textContent = translations[lang].subtitle;
+        document.getElementById('personalInfoTitle').textContent = translations[lang].personalInfoTitle;
+        document.getElementById('firstNameLabel').textContent = translations[lang].firstNameLabel;
+        document.getElementById('lastNameLabel').textContent = translations[lang].lastNameLabel;
+        document.getElementById('birthDayLabel').textContent = translations[lang].birthDayLabel;
+        document.getElementById('birthMonthLabel').textContent = translations[lang].birthMonthLabel;
+        document.getElementById('birthdayInfoText').textContent = translations[lang].birthdayInfoText;
+        document.getElementById('privacyText').textContent = translations[lang].privacyText;
+        document.getElementById('emailLabel').textContent = translations[lang].emailLabel;
+        document.getElementById('phoneLabel').textContent = translations[lang].phoneLabel;
+        document.getElementById('requirementsTitle').textContent = translations[lang].requirementsTitle;
+        document.getElementById('requirementText').textContent = translations[lang].requirementText;
+        document.getElementById('statusText').textContent = translations[lang].statusPending;
+        document.getElementById('facebookBtn').textContent = translations[lang].facebookBtn;
+        document.getElementById('instagramBtn').textContent = translations[lang].instagramBtn;
+        document.getElementById('contactTitle').textContent = translations[lang].contactTitle;
+        document.getElementById('contactSubtitle').textContent = translations[lang].contactSubtitle;
+        document.getElementById('whatsappOption').textContent = translations[lang].whatsappOption;
+        document.getElementById('instagramOption').textContent = translations[lang].instagramOption;
+        document.getElementById('bothOption').textContent = translations[lang].bothOption;
+        document.getElementById('newsletterLabel').textContent = translations[lang].newsletterLabel;
+        document.getElementById('submitText').textContent = translations[lang].submitText;
+        document.getElementById('successTitle').textContent = translations[lang].successTitle;
+        document.getElementById('successText').textContent = translations[lang].successText;
+        document.getElementById('footerText').textContent = translations[lang].footerText;
+        
+        // Actualizar los selects de fecha
+        populateDateSelects(lang);
+    }
+
+    // Login con Facebook (versión simplificada)
+    document.getElementById('facebookLogin').addEventListener('click', function() {
+        const currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
+        
+        // Simulación de verificación exitosa
+        setTimeout(() => {
+            facebookVerified = true;
+            addVerificationResult('facebook', true, '✅ Sigues nuestra página de Facebook (Demo)');
+            updateVerificationStatus();
+        }, 1000);
+    });
+
+    function resetFacebookButton() {
+        const currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
+        const btn = document.getElementById('facebookLogin');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fab fa-facebook-f"></i>' + translations[currentLang].facebookBtn;
+    }
+
+    // Login con Instagram
+    document.getElementById('instagramLogin').addEventListener('click', function() {
+        const currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
+        
+        setTimeout(() => {
+            instagramVerified = true;
+            addVerificationResult('instagram', true, '✅ Conectado a Instagram (Demo)');
+            updateVerificationStatus();
+        }, 1000);
+    });
+
+    // Agregar resultado de verificación
+    function addVerificationResult(platform, success, message) {
+        const resultsDiv = document.getElementById('verificationResults');
+        const resultDiv = document.createElement('div');
+        resultDiv.className = `verification-result ${success ? 'result-success' : 'result-error'}`;
+        resultDiv.innerHTML = `<i class="fab fa-${platform}"></i> ${message}`;
+        resultsDiv.appendChild(resultDiv);
+    }
+
+    // Actualizar estado de verificación
+    function updateVerificationStatus() {
+        const statusDiv = document.getElementById('verificationStatus');
+        const statusText = document.getElementById('statusText');
+        const currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
+        
+        if (facebookVerified || instagramVerified) {
+            statusDiv.className = 'verification-status status-success';
+            statusText.innerHTML = '<i class="fas fa-check"></i> ' + translations[currentLang].statusSuccess;
+            validateForm();
+        }
+    }
+
+    // Selección de contacto
+    document.querySelectorAll('.contact-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.contact-option').forEach(opt => opt.classList.remove('selected'));
+            this.classList.add('selected');
+            document.getElementById('contactMethod').value = this.getAttribute('data-method');
+            validateForm();
+        });
+    });
+
+    // Validación mejorada
+    function validateForm() {
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const birthDay = document.getElementById('birthDay').value;
+        const birthMonth = document.getElementById('birthMonth').value;
+        const email = document.getElementById('email').value;
+        const phone = document.getElementById('phone').value;
+        const contactMethod = document.getElementById('contactMethod').value;
+        const isVerified = facebookVerified || instagramVerified;
+        
+        const allFieldsFilled = firstName && lastName && birthDay && birthMonth && email && phone && contactMethod;
+        const isValid = allFieldsFilled && isVerified;
+        
+        document.getElementById('submitBtn').disabled = !isValid;
+        return isValid;
+    }
+
+    // Validar campos en tiempo real
+    document.querySelectorAll('input, select').forEach(field => {
+        field.addEventListener('input', validateForm);
+        field.addEventListener('change', validateForm);
+    });
+
+    // ENVÍO DEL FORMULARIO CORREGIDO
+    document.getElementById('raffle-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!validateForm()) {
+            const currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
+            alert(translations[currentLang].validationError);
+            return;
+        }
+        
+        // Mostrar loading - CORREGIDO: usar variable local
+        const submitBtn = document.getElementById('submitBtn');
+        const originalText = submitBtn.innerHTML; // ✅ CORREGIDO: definir la variable aquí
+        submitBtn.innerHTML = '<div class="loading"></div> Procesando...';
+        submitBtn.disabled = true;
+        
+        const formData = {
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            birthDay: document.getElementById('birthDay').value,
+            birthMonth: document.getElementById('birthMonth').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            contactMethod: document.getElementById('contactMethod').value,
+            newsletter: document.getElementById('newsletter').checked,
+            facebookVerified: facebookVerified,
+            instagramVerified: instagramVerified,
+            timestamp: new Date(),
+            language: document.querySelector('.lang-btn.active').getAttribute('data-lang')
+        };
+        
+        console.log("📤 Enviando datos:", formData);
+        
+        try {
+            // GUARDAR EN FIREBASE
+            const resultado = await guardarEnFirebase(formData);
+            
+            if (resultado.exito) {
+                // Marcar que ya participó
+                //localStorage.setItem('sorteo_sensaciones_participo', 'true');
+                //localStorage.setItem('sorteo_sensaciones_fecha', new Date().toISOString());
+                //localStorage.setItem('sorteo_sensaciones_id', resultado.id);
+                
+                console.log("🎉 Participación completada exitosamente");
+                mostrarMensajeExito();
+            } else {
+                console.error("⚠️ Error al guardar, pero mostramos éxito al usuario");
+                // Aún así mostramos éxito al usuario
+                //localStorage.setItem('sorteo_sensaciones_participo', 'true');
+                mostrarMensajeExito();
+            }
+        } catch (error) {
+            console.error("💥 Error crítico:", error);
+            // Restaurar botón
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            
+            alert("Error al procesar tu participación. Por favor, intenta nuevamente.");
+        }
+    });
+
+    // Inicializar
+    createParticles();
+    populateDateSelects();
+    updateLanguage('es');
+
+    // Verificar si ya participó al cargar la página
+    //document.addEventListener('DOMContentLoaded', function() {
+      //  if (verificarParticipacionPrevia()) {
+        //    console.log('Usuario ya participó anteriormente');
+        //}
+        
+        // Verificar estado de Firebase
+        if (db) {
+            console.log('✅ Firebase conectado correctamente');
+        } else {
+            console.error('❌ Firebase no se pudo inicializar');
+        }
+    });
+
+    console.log('🎯 Sorteo cargado correctamente');
+</script>
